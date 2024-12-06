@@ -9,20 +9,22 @@ class CityDataProcessor:
         self.city_data = defaultdict(list)
 
     def load_csv(self, file_path):
+        self.city_data.clear()
         with open(file_path, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
+            reader = csv.DictReader(file, delimiter=';')
             for row in reader:
                 city = row['city']
-                floors = int(row['floors'])
+                floors = int(row['floor'])
                 self.city_data[city].append(floors)
 
     def load_xml(self, file_path):
+        self.city_data.clear()
         tree = ET.parse(file_path)
         root = tree.getroot()
-        for city in root.findall('city'):
-            name = city.get('name')
-            floors = int(city.find('floors').text)
-            self.city_data[name].append(floors)
+        for item in root.findall('item'):
+            city = item.get('city')
+            floor = int(item.get('floor'))
+            self.city_data[city].append(floor)
 
     def get_duplicates(self):
         duplicates = defaultdict(int)
