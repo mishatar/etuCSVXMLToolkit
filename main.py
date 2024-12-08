@@ -5,10 +5,20 @@ from collections import defaultdict
 
 
 class CityDataProcessor:
+    """
+        Класс для обработки данных о городах.
+    """
+
     def __init__(self):
+        """
+        Инициализирует экземпляр класса CityDataProcessor.
+        """
         self.city_data = defaultdict(list)
 
     def load_csv(self, file_path):
+        """
+        Загружает данные о городах из CSV-файла.
+        """
         self.city_data.clear()
         with open(file_path, mode='r', encoding='utf-8') as file:
             reader = csv.DictReader(file, delimiter=';')
@@ -18,6 +28,9 @@ class CityDataProcessor:
                 self.city_data[city].append(floors)
 
     def load_xml(self, file_path):
+        """
+        Загружает данные о городах из XML-файла.
+        """
         self.city_data.clear()
         tree = ET.parse(file_path)
         root = tree.getroot()
@@ -27,12 +40,18 @@ class CityDataProcessor:
             self.city_data[city].append(floor)
 
     def get_duplicates(self):
+        """
+        Определяет количество дублирующихся записей для каждого города.
+        """
         duplicates = defaultdict(int)
         for city in self.city_data:
             duplicates[city] = len(self.city_data[city])
         return {city: count for city, count in duplicates.items() if count > 1}
 
     def get_floor_distribution(self):
+        """
+        Вычисляет распределение этажности зданий.
+        """
         distribution = defaultdict(int)
         for floors in self.city_data.values():
             for floor_count in floors:
@@ -41,20 +60,33 @@ class CityDataProcessor:
 
 
 class StatisticsPrinter:
+    """
+    Класс для вывода и сохранения статистики.
+    """
+
     @staticmethod
     def print_duplicates(duplicates):
+        """
+        Выводит информацию о дублирующихся записях в консоль.
+        """
         print("Дублирующиеся записи:")
         for city, count in duplicates.items():
             print(f"{city}: {count} раз(а)")
 
     @staticmethod
     def print_floor_distribution(distribution):
+        """
+        Выводит распределение этажности зданий в консоль.
+        """
         print("Распределение этажности зданий:")
         for floors, count in sorted(distribution.items()):
             print(f"{floors} этажных зданий: {count}")
 
     @staticmethod
     def write_statistics_to_file(duplicates, distribution, output_file):
+        """
+        Сохраняет статистику в текстовый файл.
+        """
         with open(output_file, 'w', encoding='utf-8') as file:
             file.write("Дублирующиеся записи:\n")
             for city, count in duplicates.items():
@@ -66,10 +98,20 @@ class StatisticsPrinter:
 
 
 class Application:
+    """
+    Класс для управления процессом взаимодействия с пользователем.
+    """
+
     def __init__(self):
+        """
+        Инициализирует экземпляр класса Application.
+        """
         self.processor = CityDataProcessor()
 
     def run(self):
+        """
+        Запускает основной цикл работы приложения.
+        """
         while True:
             file_path = input("Введите путь до файла-справочника (или 'exit' для выхода): ")
             if file_path.lower() == 'exit':
